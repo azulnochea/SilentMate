@@ -20,8 +20,8 @@ It helps users maintain digital etiquette without worrying about forgetting to m
 | Name | Role | Git Branch |
 |------|------|------------|
 | Kim Eunju | 전체 UI 정리 + README + PPT + 백엔드 일부 보조 | `feature/ui-readme` |
-| Roh Hajin | 시간표 입력 기능 개발 | `feature/schedule-ui` |
-| Cho Yoonah | 무음모드 타이머 로직 구현 | `feature/silent-timer` |
+| Cho Yoonah | 시간표 입력 기능 개발 | `feature/schedule-ui` |
+| Roh Hajin | 무음모드 타이머 로직 구현 | `feature/silent-timer` |
 | Yoon Soyoung | 현재 상태 표시 및 설정 저장 | `feature/status-storage` |
 
 ---
