@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -17,6 +16,26 @@
       <p class="normal">🔔 수업 시간이 아닙니다. 벨소리 OK!</p>
     {% endif %}
   </section>
+
+  <section>
+    <h2>수동 무음 상태</h2>
+    <p>현재 수동 무음 상태: <strong>{{ 'ON' if manual else 'OFF' }}</strong></p>
+    <form action="/toggle" method="get">
+      <button type="submit" style="
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+      ">
+        🔁 수동 무음 전환
+      </button>
+    </form>
+  </section>
 </body>
 </html>
-

@@ -5,27 +5,25 @@ import os
 
 app = Flask(__name__)
 
-# DB 파일 경로
+# DB 경로 설정 (상대경로로 깔끔하게)
 DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'timetable.db')
 
 @app.route('/')
 def home():
     silent = is_silent_now()
     manual = get_manual_setting()
-    return render_template('index.html', silent=silent or manual, manual=manual)
+    return render_template('index.html', silent=silent, manual=manual)
 
+# 현재 요일, 시간 가져오는 함수
 def get_current_day_time():
     now = datetime.now()
     day = now.strftime('%A')
     time = now.strftime('%H:%M')
     return day, time
 
+# 자동 시간표 기반 무음 모드 판단
 def is_silent_now():
     day, current_time = get_current_day_time()
-
-    if not os.path.exists(DB_PATH):
-        return False
-
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     try:
@@ -33,7 +31,6 @@ def is_silent_now():
         rows = cur.fetchall()
     except sqlite3.OperationalError:
         rows = []
-
     conn.close()
 
     for start, end in rows:
@@ -41,6 +38,7 @@ def is_silent_now():
             return True
     return False
 
+# 수동 무음 설정 읽기
 def get_manual_setting():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -49,6 +47,7 @@ def get_manual_setting():
     conn.close()
     return bool(result[0]) if result else False
 
+# 수동 무음 설정 저장
 def set_manual(value):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -56,6 +55,14 @@ def set_manual(value):
     conn.commit()
     conn.close()
 
+# 토글 방식으로 수동 무음 변경
+@app.route('/toggle')
+def toggle_manual():
+    current = get_manual_setting()
+    set_manual(not current)
+    return redirect(url_for('home'))
+
+# 수동 모드 설정 (라디오버튼 폼으로 전송되는 경우)
 @app.route('/set_manual', methods=['POST'])
 def set_manual_route():
     value = request.form.get('silent')
@@ -65,11 +72,6 @@ def set_manual_route():
     set_manual(int(value))
     return redirect(url_for('home'))
 
-@app.route('/toggle')
-def toggle_manual():
-    current = get_manual_setting()
-    set_manual(not current)
-    return redirect(url_for('home'))
-
 if __name__ == '__main__':
     app.run(debug=True)
+
