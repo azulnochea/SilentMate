@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SilentMate</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>🔕 SilentMate</h1>
+
+  <section>
+    <h2>자동 무음 상태 안내</h2>
+    {% if silent %}
+      <p class="silent">🔇 지금은 수업 중입니다. 무음 모드로 전환하세요!</p>
+    {% else %}
+      <p class="normal">🔔 수업 시간이 아닙니다. 벨소리 OK!</p>
+    {% endif %}
+  </section>
+</body>
+</html>
+
