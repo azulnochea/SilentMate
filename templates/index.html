@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SilentMate State</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>Checking SilentMate Status</h1>
+
+    <p><strong>Current day of the week:</strong> {{day}}</p>
+    <p><strong>Current time:</strong> {{time}}</p>
+
+    {% if silent %}
+        <p style="color: red; font-size: 20px;">You are currently in silent mode!</p>
+    {% else %}
+        <p style="color: green; font-size: 20px;">You are currently in sound mode!</p>
+    {% endif %}
+
+    <hr>
+    <h2> Manual Settings</h2>
+    <form method="POST" action="/set_manual">
+        <label>
+            <input type="radio" name="silent" value="1" {% if silent %}checked{% endif %}>
+            Silent Mode
+	</label><br>
+	<label>
+	    <input type="radio" name="silent" value="0" {% if not silent %}checked{% endif %}>
+	    Sound Mode
+	</label><br><br>
+	<button type="submit">Storage</button>
+    </form>
+
+</body>
+</html>
