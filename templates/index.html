@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SilentMate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -15,6 +15,12 @@
     {% else %}
       <p class="normal">🔔 수업 시간이 아닙니다. 벨소리 OK!</p>
     {% endif %}
+  </section>
+
+  <section>
+    <h2>수동 무음 상태</h2>
+    <p>현재 수동 무음 상태: <strong>{{ 'ON' if manual else 'OFF' }}</strong></p>
+    <a href="/toggle"><button>수동 무음 전환></button></a>
   </section>
 </body>
 </html>
