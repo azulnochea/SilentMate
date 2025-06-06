@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>시간표 등록</title>
+</head>
+<body>
+  <h2>📝 시간표 등록</h2>
+  <form action="/submit" method="POST">
+    <label>요일:
+      <select name="day" required>
+        <option>Monday</option>
+        <option>Tuesday</option>
+        <option>Wednesday</option>
+        <option>Thursday</option>
+        <option>Friday</option>
+      </select>
+    </label><br><br>
+
+    <label>시작 시간: <input type="time" name="start_time" required></label><br><br>
+    <label>종료 시간: <input type="time" name="end_time" required></label><br><br>
+
+    <button type="submit">등록</button>
+  </form>
+
+  <br>
+  <a href="/">← 홈으로 돌아가기</a>
+</body>
+</html>
