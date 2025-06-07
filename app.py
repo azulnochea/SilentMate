@@ -29,7 +29,6 @@ def is_silent_now():
     except sqlite3.OperationalError:
         rows = []
     conn.close()
-
     for start, end in rows:
         if start <= current_time <= end:
             return True
@@ -54,6 +53,15 @@ def set_manual(value):
 def toggle_manual():
     current = get_manual_setting()
     set_manual(not current)
+    return redirect(url_for('home'))
+
+@app.route('/set_manual', methods=['POST'])
+def set_manual_route():
+    value = request.form.get('silent')
+    if value is None:
+        print("silent 값이 안 넘어왔어요!")
+        return redirect(url_for('home'))
+    set_manual(int(value))
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
