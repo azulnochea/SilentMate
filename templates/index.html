@@ -1,5 +1,4 @@
 <!DOCTYPE html>
- feature/status-storage
 <html>
 <head>
     <title>SilentMate State</title>
@@ -18,24 +17,12 @@
     {% endif %}
 
     <hr>
-    <h2> Manual Settings</h2>
-    <form method="POST" action="/set_manual">
-        <label>
-            <input type="radio" name="silent" value="1" {% if silent %}checked{% endif %}>
-            Silent Mode
-	</label><br>
-	<label>
-	    <input type="radio" name="silent" value="0" {% if not silent %}checked{% endif %}>
-	    Sound Mode
-	</label><br><br>
-	<button type="submit">Storage</button>
-    </form>
-
+    
 </body>
 </html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SilentMate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -50,7 +37,39 @@
       <p class="normal">🔔 수업 시간이 아닙니다. 벨소리 OK!</p>
     {% endif %}
   </section>
+
+  <section>
+    <h2>수동 무음 상태</h2>
+    <p>현재 수동 무음 상태: <strong>{{ 'ON' if manual else 'OFF' }}</strong></p>
+    <form action="/toggle" method="get">
+  <button type="submit" style="
+    background-color: #4CAF50; 
+    border: none; 
+    color: white; 
+    padding: 10px 20px; 
+    text-align: center; 
+    text-decoration: none;
+    display: inline-block; 
+    font-size: 16px; 
+    border-radius: 5px;
+    cursor: pointer;
+  ">
+    🔁 수동 무음 전환
+  </button>
+</form>
+
+  </section>
+
+  <div class="card">
+    <h3>수동 무음 상태</h3>
+    <p>
+      현재 수동 무음 상태:
+      {% if manual_silent %}
+        ON 🔕
+      {% else %}
+        OFF 🔔
+      {% endif %}
+    </p>
+  </div>
 </body>
 </html>
-
- main
