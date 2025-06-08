@@ -1,34 +1,30 @@
-
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime
 import sqlite3
 import os
 
 app = Flask(__name__)
 
+# DB 경로
+DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'timetable.db')
+
 # 현재 요일, 시간 반환
 def get_current_day_time():
     now = datetime.now()
-    day = now.strftime('%A')   # 예: Monday
-    time = now.strftime('%H:%M')  # 예: 14:30
+    day = now.strftime('%A')
+    time = now.strftime('%H:%M')
     return day, time
 
 # 무음 모드 판단
 def is_silent_now():
     day, current_time = get_current_day_time()
-
-    if not os.path.exists('db/timetable.db'):
-        return False
-
-    conn = sqlite3.connect('db/timetable.db')
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     try:
         cur.execute("SELECT start_time, end_time FROM timetable WHERE day = ?", (day,))
         rows = cur.fetchall()
-    except Exception as e:
-        print("🔥 DB 조회 에러:", e)
-        conn.close()
-        return False
+    except sqlite3.OperationalError:
+        rows = []
     conn.close()
 
     for start, end in rows:
@@ -36,11 +32,45 @@ def is_silent_now():
             return True
     return False
 
-# 홈 화면 (현재 상태 표시)
+# 수동 무음 설정 읽기
+def get_manual_setting():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT silent_mode FROM settings WHERE id = 1")
+    result = cur.fetchone()
+    conn.close()
+    return bool(result[0]) if result else False
+
+# 수동 무음 설정 저장
+def set_manual(value):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("UPDATE settings SET silent_mode = ? WHERE id = 1", (int(value),))
+    conn.commit()
+    conn.close()
+
+# 홈 화면
 @app.route('/')
 def home():
     silent = is_silent_now()
-    return render_template('index.html', silent=silent)
+    manual = get_manual_setting()
+    return render_template('index.html', silent=silent or manual, manual=manual)
+
+# 수동 무음 토글
+@app.route('/toggle')
+def toggle_manual():
+    current = get_manual_setting()
+    set_manual(not current)
+    return redirect(url_for('home'))
+
+# 수동 설정 라디오버튼 처리
+@app.route('/set_manual', methods=['POST'])
+def set_manual_route():
+    value = request.form.get('silent')
+    if value is None:
+        return redirect(url_for('home'))
+    set_manual(int(value))
+    return redirect(url_for('home'))
 
 # 시간표 입력 폼 페이지
 @app.route('/add')
@@ -50,20 +80,18 @@ def add_schedule():
 # 시간표 입력 처리
 @app.route('/submit', methods=['POST'])
 def submit_schedule():
-    conn = None
     try:
         day = request.form['day']
         start = request.form['start_time']
         end = request.form['end_time']
-        print(f"👉 입력값: {day}, {start}, {end}")
 
         if not os.path.exists('db'):
             os.makedirs('db')
 
-        conn = sqlite3.connect('db/timetable.db', check_same_thread=False)
+        conn = sqlite3.connect(DB_PATH)
         cur = conn.cursor()
 
-        # 테이블이 없으면 생성
+        # 테이블 생성 (없는 경우만)
         cur.execute('''CREATE TABLE IF NOT EXISTS timetable (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             day TEXT,
@@ -71,22 +99,19 @@ def submit_schedule():
             end_time TEXT
         )''')
 
-        # 데이터 삽입
         cur.execute("INSERT INTO timetable (day, start_time, end_time) VALUES (?, ?, ?)", (day, start, end))
         conn.commit()
+        conn.close()
 
-        print("✅ DB 저장 성공!")
         return redirect('/success')
     
     except Exception as e:
-        print("🔥 에러 발생:", e)
         return f"<h2>오류 발생: {e}</h2>"
 
-#시간표 등록 성공 시 보여주는 페이지
+# 등록 성공 페이지
 @app.route('/success')
 def success():
     return render_template('success.html')
 
-# 앱 실행
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)

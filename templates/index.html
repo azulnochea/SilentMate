@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SilentMate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>🔕 SilentMate</h1>
+  <h1>SilentMate</h1>
 
   <section>
     <h2>자동 무음 상태 안내</h2>
@@ -16,6 +16,20 @@
       <p class="normal">🔔 수업 시간이 아닙니다. 벨소리 OK!</p>
     {% endif %}
   </section>
+
+  <section>
+    <h2>수동 설정</h2>
+    <form method="POST" action="/set_manual">
+      <label>
+        <input type="radio" name="silent" value="1" {% if manual %}checked{% endif %}>
+        수동 무음 모드
+      </label><br>
+      <label>
+        <input type="radio" name="silent" value="0" {% if not manual %}checked{% endif %}>
+        수동 사운드 모드
+      </label><br><br>
+      <button type="submit">저장</button>
+    </form>
+  </section>
 </body>
 </html>
-
