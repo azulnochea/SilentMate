@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>시간표 등록</title>
+</head>
+<body>
+  <h2>🕒 시간표 등록 페이지</h2>
+  <form action="/submit_schedule" method="post">
+    <label>요일: <input type="text" name="day"></label><br>
+    <label>시작 시간: <input type="time" name="start_time"></label><br>
+    <label>종료 시간: <input type="time" name="end_time"></label><br>
+    <button type="submit">등록</button>
+  </form>
+</body>
+</html>
