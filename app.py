@@ -77,14 +77,20 @@ def submit_schedule():
         conn.close()
 
         print("✅ DB 저장 성공!")
-        return redirect('/')
+        return redirect('/success')
     
     except Exception as e:
         print("🔥 에러 발생:", e)
         return f"<h2>오류 발생: {e}</h2>"
 
+#시간표 등록 성공 시 보여주는 페이지
+@app.route('/success')
+def success():
+        return render_template('success.html')
+
 # 앱 실행
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run(debug=True)
 from flask import Flask, render_template  # flask 웹서버, 템플릿 사용
 from datetime import datetime  # 현재시간/날짜 모듈
@@ -125,5 +131,4 @@ def is_silent_now():
 
 # 앱 실행
 if __name__ == '__main__':
-    app.run(debug=True)
- main
+    app.run(host='0.0.0.0', port=5000, debug=True)
