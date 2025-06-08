@@ -4,6 +4,30 @@ import sqlite3
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    silent = is_silent_now()
+    manual_silent = get_manual_setting()
+    return render_template('index.html', silent=silent, manual=manual_silent)
+
+def get_current_day_time():
+    now = datetime.now()
+    day = now.strftime('%A')
+    time = now.strftime('%H:%M')
+    return day, time
+
+def is_silent_now():
+    day, current_time = get_current_day_time()
+    conn = sqlite3.connect('db/timetable.db')
+    cur = conn.cursor()
+    cur.execute("SELECT start_time, end_time FROM timetable WHERE day = ?", (day,))
+    rows = cur.fetchall()
+    conn.close()
+    for start, end in rows:
+        if start <= current_time <= end:
+            return True
+    return False
+
 def get_manual_setting():
     conn = sqlite3.connect('db/timetable.db')
     cur = conn.cursor()
@@ -21,29 +45,20 @@ def set_manual(value):
     conn.commit()
     conn.close()
 
-@app.route('/')
-def home():
-    now = datetime.now().strftime('%H:%M')
-    silent = get_manual_setting()
-    day = datetime.now().strftime('%A')
-    return render_template('index.html', time=now, day=day, silent=silent)
-
-
 @app.route('/set_manual', methods=['POST'])
 def set_manual_route():
-    form_date = dict(request.form)
-    print("form data:", form_date)
+    value = request.form.get('silent')
+    if value is None:
+        print("silent 값이 안 넘어왔어요!")
+        return redirect(url_for('home'))
+    set_manual(int(value))
+    return redirect(url_for('home'))
 
-    mode_value = request.form.get('mode')
-    print("picked mode:", mode_value)
-
-    if mode_value is None:
-        return "You didn't check nothing!", 400
-
-    value = mode_value == 'silent'
-    set_manual(value)
+@app.route('/toggle')
+def toggle_manual():
+    current = get_manual_setting()
+    set_manual(not current)
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
     app.run(debug=True)
-
