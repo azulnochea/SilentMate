@@ -18,23 +18,17 @@
   </section>
 
   <section>
-    <h2>수동 무음 상태</h2>
-    <p>현재 수동 무음 상태: <strong>{{ 'ON' if manual else 'OFF' }}</strong></p>
-    <form action="/toggle" method="get">
-      <button type="submit" style="
-        background-color: #4CAF50;
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-      ">
-        🔁 수동 무음 전환
-      </button>
+    <h2>수동 설정</h2>
+    <form method="POST" action="/set_manual">
+      <label>
+        <input type="radio" name="silent" value="1" {% if manual %}checked{% endif %}>
+        수동 무음 모드
+      </label><br>
+      <label>
+        <input type="radio" name="silent" value="0" {% if not manual %}checked{% endif %}>
+        수동 사운드 모드
+      </label><br><br>
+      <button type="submit">저장</button>
     </form>
   </section>
 </body>

@@ -11,7 +11,7 @@ DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'timetable.db')
 def home():
     silent = is_silent_now()
     manual = get_manual_setting()
-    return render_template('index.html', silent=silent, manual=manual)
+    return render_template('index.html', silent=silent or manual, manual=manual)
 
 def get_current_day_time():
     now = datetime.now()
@@ -54,15 +54,6 @@ def set_manual(value):
 def toggle_manual():
     current = get_manual_setting()
     set_manual(not current)
-    return redirect(url_for('home'))
-
-@app.route('/set_manual', methods=['POST'])
-def set_manual_route():
-    value = request.form.get('silent')
-    if value is None:
-        print("silent 값이 안 넘어왔어요!")
-        return redirect(url_for('home'))
-    set_manual(int(value))
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
