@@ -18,7 +18,24 @@
 
   <section id="status">
     <h2>Current Status</h2>
-    <p id="status-text">Normal Mode</p>
+    <p id="status-text">
+	{% if is_silent %}
+	    You are currently in <strong>silent mode</strong>!
+	{% else %}
+	    You are currently in <strong>sound mode</strong>!
+	{% endif %}
+    </p>
+  </section>
+
+  <section id="manual-setting">
+    <h2>Manual Settings</h2>
+    <form action="/set_manual" method="POST">
+        <input type="radio" name="mode" value="silent" id="silent" checked>
+	<label for="silent">Silent Mode</label><br>
+	<input type="radio" name="mode" value="sound" id="sound">
+	<label for="sound">Sound Mode</label><br>
+	<button type="submit">Storage</button>
+    </form>
   </section>
 
   <script src="script.js"></script>
