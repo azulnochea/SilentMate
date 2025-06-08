@@ -8,18 +8,14 @@ app = Flask(__name__)
 # DB 경로
 DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'timetable.db')
 
-@app.route('/')
-def home():
-    silent = is_silent_now()
-    manual = get_manual_setting()
-    return render_template('index.html', silent=silent or manual, manual=manual)
-
+# 현재 요일, 시간 반환
 def get_current_day_time():
     now = datetime.now()
     day = now.strftime('%A')
     time = now.strftime('%H:%M')
     return day, time
 
+# 무음 모드 판단
 def is_silent_now():
     day, current_time = get_current_day_time()
     conn = sqlite3.connect(DB_PATH)
@@ -30,11 +26,13 @@ def is_silent_now():
     except sqlite3.OperationalError:
         rows = []
     conn.close()
+
     for start, end in rows:
         if start <= current_time <= end:
             return True
     return False
 
+# 수동 무음 설정 읽기
 def get_manual_setting():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -43,6 +41,7 @@ def get_manual_setting():
     conn.close()
     return bool(result[0]) if result else False
 
+# 수동 무음 설정 저장
 def set_manual(value):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -50,20 +49,69 @@ def set_manual(value):
     conn.commit()
     conn.close()
 
+# 홈 화면
+@app.route('/')
+def home():
+    silent = is_silent_now()
+    manual = get_manual_setting()
+    return render_template('index.html', silent=silent or manual, manual=manual)
+
+# 수동 무음 토글
 @app.route('/toggle')
 def toggle_manual():
     current = get_manual_setting()
     set_manual(not current)
     return redirect(url_for('home'))
 
+# 수동 설정 라디오버튼 처리
 @app.route('/set_manual', methods=['POST'])
 def set_manual_route():
     value = request.form.get('silent')
     if value is None:
-        print("silent 값이 안 넘어왔어요!")
         return redirect(url_for('home'))
     set_manual(int(value))
     return redirect(url_for('home'))
+
+# 시간표 입력 폼 페이지
+@app.route('/add')
+def add_schedule():
+    return render_template('add.html')
+
+# 시간표 입력 처리
+@app.route('/submit', methods=['POST'])
+def submit_schedule():
+    try:
+        day = request.form['day']
+        start = request.form['start_time']
+        end = request.form['end_time']
+
+        if not os.path.exists('db'):
+            os.makedirs('db')
+
+        conn = sqlite3.connect(DB_PATH)
+        cur = conn.cursor()
+
+        # 테이블 생성 (없는 경우만)
+        cur.execute('''CREATE TABLE IF NOT EXISTS timetable (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            day TEXT,
+            start_time TEXT,
+            end_time TEXT
+        )''')
+
+        cur.execute("INSERT INTO timetable (day, start_time, end_time) VALUES (?, ?, ?)", (day, start, end))
+        conn.commit()
+        conn.close()
+
+        return redirect('/success')
+    
+    except Exception as e:
+        return f"<h2>오류 발생: {e}</h2>"
+
+# 등록 성공 페이지
+@app.route('/success')
+def success():
+    return render_template('success.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
