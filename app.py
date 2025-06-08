@@ -8,12 +8,12 @@ app = Flask(__name__)
 def home():
     silent = is_silent_now()
     manual = get_manual_setting()
-    return render_template('index.html', silent=silent, manual=manual)
+    return render_template('index.html', silent=silent or manual, manual=manual)
 
 def get_current_day_time():
     now = datetime.now()
-    day = now.strftime('%A')       # 예: Monday
-    time = now.strftime('%H:%M')   # 예: 13:45
+    day = now.strftime('%A')       
+    time = now.strftime('%H:%M')   
     return day, time
 
 def is_silent_now():
@@ -56,3 +56,4 @@ def set_manual_route():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
