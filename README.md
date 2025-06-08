@@ -1,23 +1,23 @@
 # 🔕 SilentMate
 
-SilentMate is an open-source app that automatically switches your device to silent mode during scheduled times like lectures or meetings.  
-It helps users maintain digital etiquette without worrying about forgetting to mute their phone.
+SilentMate는 시간표 기반 자동 무음 모드 전환 웹 앱입니다.  
+수업 시간에 맞춰 자동으로 무음 모드로 전환되고, 사용자가 수동으로도 무음 설정을 변경할 수 있습니다.
 
 ---
 
-## ✨ Features
+## ✨ 주요 기능
 
-- Add/edit/delete scheduled silent times
-- Automatically switch to silent mode during the set period
-- Restore sound mode after the time ends
-- Display current mode status (e.g. “Now in silent mode”)
-- Simple and clear UI
+- 📅 시간표 기반 자동 무음 모드
+- 🔕 수동 무음 모드 전환 가능
+- 🎯 현재 모드 상태 표시 (수업중 / 일반 모드)
+- 🖥️ 웹 기반 UI 제공 (Flask)
+- 💾 SQLite 데이터베이스 기반 저장
 
 ---
 
-## 🧑‍🤝‍🧑 Team Members & Branches
+## 🧑‍🤝‍🧑 팀원 & 작업 브랜치
 
-| Name | Role | Git Branch |
+| 이름 | 역할 | Git Branch |
 |------|------|------------|
 | Kim Eunju | 전체 UI 정리 + README + 백엔드 일부 보조 | `feature/ui-readme` |
 | Cho Yoonah | 시간표 입력 기능 개발 | `feature/schedule-ui` |
@@ -26,18 +26,20 @@ It helps users maintain digital etiquette without worrying about forgetting to m
 
 ---
 
-## 💻 Tech Stack
+## 💻 기술 스택
 
-- Python with Tkinter *(or HTML/JS if using web)*
-- GitHub for version control & collaboration
-- JSON for local storage (optional)
+- Python 3.x
+- Flask (웹 서버 및 라우팅)
+- SQLite (DB 저장)
+- GitHub (버전 관리 및 협업)
+- HTML + CSS (웹 프론트엔드)
 
 ---
 
-## 🧭 How to Run (Python example)
+## 🚀 실행 방법
+
+1️⃣ 프로젝트 클론
 
 ```bash
-git clone git@github.com:your-id/SilentMate.git
+git clone git@github.com:azulnochea/SilentMate.git
 cd SilentMate
-python3 main.py
-
