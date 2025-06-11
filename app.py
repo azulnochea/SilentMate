@@ -52,11 +52,16 @@ def set_manual(value):
 # 홈 화면
 @app.route('/')
 def home():
-    silent = is_silent_now()
-    manual = get_manual_setting()
-    return render_template('index.html', silent=silent or manual, manual=manual)
+    auto_silent = is_silent_now()        # 자동 판단
+    manual = get_manual_setting()        # 수동 설정
 
-# 수동 무음 토글
+    # manual이 우선 적용되도록 처리
+    silent = manual if manual is not None else auto_silent
+
+    return render_template('index.html', silent=silent, manual=manual, auto_silent=auto_silent)
+
+
+   
 @app.route('/toggle')
 def toggle_manual():
     current = get_manual_setting()
