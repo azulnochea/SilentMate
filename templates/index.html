@@ -1,54 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>SilentMate</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 40px;
+    }
+    h1 {
+      text-align: center;
+      color: #343a40;
+    }
+    .card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .status {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .silent {
+      color: #dc3545;
+    }
+    .sound {
+      color: #28a745;
+    }
+    .hint {
+      font-size: 14px;
+      color: #888;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
 </head>
 <body>
-  <h1>SilentMate</h1>
 
-  <section>
-    <h2>자동 무음 상태 안내</h2>
+  <h1>🔔 SilentMate</h1>
+
+  <div class="card">
+    <h2>🔔 현재 벨소리 상태</h2>
     {% if silent %}
-      <p class="silent">🔇 지금은 수업 중입니다. 무음 모드로 전환하세요!</p>
+      <p class="status silent">🔇 현재 무음 모드입니다.</p>
     {% else %}
-      <p class="normal">🔔 수업 시간이 아닙니다. 벨소리 OK!</p>
+      <p class="status sound">🔔 현재 사운드 모드입니다.</p>
     {% endif %}
-  </section>
+    <p class="hint">{{ reason }}</p>
+    <p class="hint">
+    </p>
+  </div>
 
-  <section>
-    <h2>수동 설정</h2>
+  {% if auto_silent and not manual_override %}
+  <div class="alert alert-warning" role="alert" style="margin: 20px;">
+    📂 수업시간
+  </div>
+  {% endif %}
+
+
+  <div class="card">
+    <h2>⚙️ 수동 설정</h2>
     <form method="POST" action="/set_manual">
-      <label>
-        <input type="radio" name="silent" value="1" {% if manual %}checked{% endif %}>
-        수동 무음 모드
-      </label><br>
-      <label>
-        <input type="radio" name="silent" value="0" {% if not manual %}checked{% endif %}>
-        수동 사운드 모드
-      </label><br><br>
+      <label><input type="radio" name="silent" value="1" {% if manual %}checked{% endif %}> 수동 무음 모드</label><br>
+      <label><input type="radio" name="silent" value="0" {% if not manual %}checked{% endif %}> 수동 사운드 모드</label><br><br>
       <button type="submit">저장</button>
     </form>
-  </section>
+  </div>
 
-<section>
-  <h2>시간표 등록하기</h2>
-  <a href="/add">
-    <button style="
-        background-color: #007BFF;
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;">
-      ➕ 시간표 등록
-    </button>
-  </a>
-</section>
+  <div class="card">
+    <h2>🗓️ 시간표 등록하기</h2>
+    <a href="/add">
+      <button style="background-color: #007BFF;">➕ 시간표 등록</button>
+    </a>
+  </div>
 
 </body>
 </html>
-
