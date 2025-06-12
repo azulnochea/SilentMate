@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from datetime import datetime
+from datetime import datetime, timedelta
 import sqlite3
 import os
 
@@ -10,7 +10,7 @@ DB_PATH = os.path.join(os.path.dirname(__file__), 'db', 'timetable.db')
 
 # 현재 요일, 시간 반환
 def get_current_day_time():
-    now = datetime.now()
+    now = datetime.utcnow() + timedelta(hours=9)
     day = now.strftime('%A')
     time = now.strftime('%H:%M')
     return day, time
