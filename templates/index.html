@@ -66,10 +66,10 @@
     </p>
   </div>
 
-  {% if auto_silent and not manual_override %}
-  <div class="alert alert-warning" role="alert" style="margin: 20px;">
-    📂 수업시간
-  </div>
+  {% if auto_silent_active %}
+  <section class="card yellow-card" style="margin-top: 10px;">
+    <p>📁 수업시간</p>
+  </section>
   {% endif %}
 
 
